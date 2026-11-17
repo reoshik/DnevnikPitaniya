@@ -2,58 +2,51 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Дневник питания"
-        Width="1280" Height="800"
-        MinWidth="1100" MinHeight="700"
+        Width="1320" Height="820"
+        MinWidth="1150" MinHeight="720"
         WindowStartupLocation="CenterScreen"
-        Background="#F5F7F6"
-        Foreground="#25352E"
+        Background="#F4F5F7"
         FontFamily="Segoe UI"
-        FontSize="14">
+        FontSize="14"
+        Foreground="#202720">
 
     <Window.Resources>
 
-        <SolidColorBrush x:Key="Accent" Color="#32765B"/>
-        <SolidColorBrush x:Key="Muted" Color="#78857D"/>
-        <SolidColorBrush x:Key="Line" Color="#E6ECE8"/>
-
         <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#25352E"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
 
-        <Style x:Key="Caption" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{StaticResource Muted}"/>
+        <Style x:Key="Muted" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#727B75"/>
             <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Margin" Value="0,0,0,7"/>
         </Style>
 
         <Style x:Key="Heading" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontSize" Value="19"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Margin" Value="0,0,0,18"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
         </Style>
 
-        <Style x:Key="Panel" TargetType="Border">
+        <Style x:Key="Card" TargetType="Border">
             <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="16"/>
-            <Setter Property="Padding" Value="22"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Padding" Value="24"/>
         </Style>
 
-        <Style x:Key="ActionButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource Accent}"/>
-            <Setter Property="Foreground" Value="White"/>
+        <Style x:Key="ButtonBase" TargetType="Button">
+            <Setter Property="Background" Value="#D5F478"/>
+            <Setter Property="Foreground" Value="#202720"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="18,11"/>
+            <Setter Property="Padding" Value="18,13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="Surface"
+                        <Border x:Name="ButtonSurface"
                                 Background="{TemplateBinding Background}"
-                                CornerRadius="9"
+                                CornerRadius="12"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -61,16 +54,22 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Surface"
-                                        Property="Opacity" Value="0.85"/>
+                                <Setter TargetName="ButtonSurface"
+                                        Property="Opacity" Value="0.82"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Surface"
-                                        Property="Opacity" Value="0.7"/>
+                                <Setter TargetName="ButtonSurface"
+                                        Property="Opacity" Value="0.65"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="ButtonSurface"
+                                        Property="BorderBrush" Value="#6F8F30"/>
+                                <Setter TargetName="ButtonSurface"
+                                        Property="BorderThickness" Value="2"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="Surface"
-                                        Property="Opacity" Value="0.45"/>
+                                <Setter TargetName="ButtonSurface"
+                                        Property="Opacity" Value="0.4"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -78,170 +77,182 @@
             </Setter>
         </Style>
 
-        <Style x:Key="NavigationButton"
+        <Style x:Key="NavButton"
                TargetType="Button"
-               BasedOn="{StaticResource ActionButton}">
+               BasedOn="{StaticResource ButtonBase}">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#67776D"/>
+            <Setter Property="Foreground" Value="#B5C0B7"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="Padding" Value="16,13"/>
-            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Padding" Value="17,15"/>
             <Setter Property="FontWeight" Value="Normal"/>
         </Style>
 
-        <Style TargetType="ComboBox">
-            <Setter Property="MinHeight" Value="38"/>
-            <Setter Property="Padding" Value="9,6"/>
-            <Setter Property="BorderBrush" Value="#DCE4DE"/>
-            <Setter Property="Background" Value="White"/>
+        <Style TargetType="TextBox">
+            <Setter Property="MinHeight" Value="44"/>
+            <Setter Property="Padding" Value="12,9"/>
+            <Setter Property="Background" Value="#F7F8FA"/>
+            <Setter Property="BorderBrush" Value="#E0E5E1"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
-        <Style TargetType="TextBox">
-            <Setter Property="MinHeight" Value="38"/>
-            <Setter Property="Padding" Value="10,7"/>
-            <Setter Property="BorderBrush" Value="#DCE4DE"/>
+        <Style TargetType="ComboBox">
+            <Setter Property="MinHeight" Value="44"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Background" Value="#F7F8FA"/>
+            <Setter Property="BorderBrush" Value="#E0E5E1"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="FieldLabel"
+               TargetType="TextBlock"
+               BasedOn="{StaticResource Muted}">
+            <Setter Property="Margin" Value="0,0,0,8"/>
         </Style>
 
         <Style TargetType="ProgressBar">
-            <Setter Property="Height" Value="7"/>
-            <Setter Property="Background" Value="#EDF1EE"/>
-            <Setter Property="Foreground" Value="{StaticResource Accent}"/>
+            <Setter Property="Height" Value="8"/>
+            <Setter Property="Background" Value="#EEF1ED"/>
+            <Setter Property="Foreground" Value="#95BD45"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Margin" Value="0,9,0,21"/>
-        </Style>
-
-        <Style TargetType="ListBoxItem">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Margin" Value="0,10,0,0"/>
         </Style>
 
     </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="210"/>
+            <ColumnDefinition Width="220"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Боковая навигация -->
-        <Border Background="White"
-                BorderBrush="{StaticResource Line}"
-                BorderThickness="0,0,1,0">
-            <Grid Margin="18,28,18,20">
+        <!-- Навигация -->
+        <Border Background="#1E2D26">
+            <Grid Margin="20,30,20,24">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <StackPanel Margin="12,0,0,34">
-                    <Border Background="#E9F3ED"
-                            CornerRadius="12"
-                            Width="44" Height="44"
+                <StackPanel Margin="10,0,0,42">
+                    <Border Background="#D5F478"
+                            CornerRadius="14"
+                            Width="46" Height="46"
                             HorizontalAlignment="Left"
-                            Margin="0,0,0,14">
+                            Margin="0,0,0,18">
                         <TextBlock Text="&#xE8A5;"
                                    FontFamily="Segoe MDL2 Assets"
-                                   FontSize="22"
-                                   Foreground="{StaticResource Accent}"
+                                   Foreground="#1E2D26"
+                                   FontSize="24"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"/>
                     </Border>
+
                     <TextBlock Text="Дневник"
-                               FontSize="23"
-                               FontWeight="SemiBold"/>
+                               FontSize="25"
+                               FontWeight="SemiBold"
+                               Foreground="White"/>
+
                     <TextBlock Text="питания"
-                               FontSize="23"
-                               Foreground="{StaticResource Accent}"/>
+                               FontSize="25"
+                               Foreground="#D5F478"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="1">
+                    <TextBlock Text="МОЁ ПРОСТРАНСТВО"
+                               Foreground="#8D9E92"
+                               FontSize="10"
+                               Margin="16,0,0,16"/>
+
                     <Button Content="Дневник"
-                            Style="{StaticResource NavigationButton}"
-                            Background="#E9F3ED"
-                            Foreground="#32765B"
+                            Style="{StaticResource NavButton}"
+                            Background="#D5F478"
+                            Foreground="#1E2D26"
                             FontWeight="SemiBold"
                             Click="Diary_Click"/>
 
                     <Button Content="Продукты"
-                            Style="{StaticResource NavigationButton}"
+                            Style="{StaticResource NavButton}"
                             Click="Products_Click"/>
 
                     <Button Content="История веса"
-                            Style="{StaticResource NavigationButton}"
+                            Style="{StaticResource NavButton}"
                             Click="Weight_Click"/>
 
                     <Button Content="Статистика"
-                            Style="{StaticResource NavigationButton}"
+                            Style="{StaticResource NavButton}"
                             Click="Statistics_Click"/>
 
                     <Button Content="Профиль"
-                            Style="{StaticResource NavigationButton}"
+                            Style="{StaticResource NavButton}"
                             Click="Profile_Click"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2">
                     <Button Content="О программе"
-                            Style="{StaticResource NavigationButton}"
+                            Style="{StaticResource NavButton}"
                             Click="About_Click"/>
-                    <Border BorderBrush="{StaticResource Line}"
+
+                    <Border BorderBrush="#3A493F"
                             BorderThickness="0,1,0,0"
-                            Padding="12,16,0,0">
-                        <TextBlock Text="Локальное приложение"
+                            Margin="10,10,10,0"
+                            Padding="0,20,0,0">
+                        <TextBlock Text="Маленькие шаги.&#10;Большие перемены."
+                                   Foreground="#9DAEA2"
                                    FontSize="12"
-                                   Foreground="{StaticResource Muted}"/>
+                                   LineHeight="21"/>
                     </Border>
                 </StackPanel>
             </Grid>
         </Border>
 
-        <!-- Рабочая область -->
-        <Grid Grid.Column="1" Margin="28,24">
+        <!-- Содержимое -->
+        <Grid Grid.Column="1" Margin="30,28">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Grid Margin="0,0,0,25">
+            <!-- Шапка -->
+            <Grid Margin="0,0,0,28">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <StackPanel>
-                    <TextBlock Text="Мой дневник"
-                               FontSize="29"
+                    <TextBlock Text="Твой день в балансе"
+                               FontSize="30"
                                FontWeight="SemiBold"/>
-                    <TextBlock Text="Питание под контролем — день за днём"
-                               Foreground="{StaticResource Muted}"
-                               Margin="0,6,0,0"/>
+                    <TextBlock Text="Записывай питание и двигайся к своей цели"
+                               Foreground="#727B75"
+                               Margin="0,7,0,0"/>
                 </StackPanel>
 
                 <Border Grid.Column="1"
                         Background="White"
-                        CornerRadius="12"
-                        Padding="15,10"
+                        CornerRadius="16"
+                        Padding="14,10"
                         VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal">
-                        <Border Background="#E9F3ED"
-                                CornerRadius="18"
-                                Width="36" Height="36"
+                        <Border Background="#EDF4DC"
+                                CornerRadius="20"
+                                Width="40" Height="40"
                                 Margin="0,0,12,0">
                             <TextBlock Text="Я"
-                                       Foreground="{StaticResource Accent}"
+                                       FontSize="16"
                                        FontWeight="SemiBold"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"/>
                         </Border>
+
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Яна" FontWeight="SemiBold"/>
+                            <TextBlock Text="Яна"
+                                       FontWeight="SemiBold"/>
                             <TextBlock Text="Контроль питания"
-                                       FontSize="12"
-                                       Foreground="{StaticResource Muted}"/>
+                                       Style="{StaticResource Muted}"
+                                       Margin="0,3,0,0"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -250,42 +261,143 @@
             <ScrollViewer Grid.Row="1"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled">
-                <Grid Margin="0,0,8,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="22"/>
-                        <ColumnDefinition Width="280"/>
-                    </Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,8,0">
 
-                    <!-- Дневник и форма -->
-                    <StackPanel>
+                    <!-- Главные показатели -->
+                    <Grid Margin="0,0,0,22">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.25*"/>
+                            <ColumnDefinition Width="18"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="18"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                        <Border Style="{StaticResource Panel}"
-                                Margin="0,0,0,20">
+                        <Border Background="#D5F478"
+                                CornerRadius="20"
+                                Padding="24">
                             <StackPanel>
-                                <Grid Margin="0,0,0,18">
+                                <TextBlock Text="Осталось на сегодня"
+                                           Foreground="#43552C"/>
+                                <TextBlock x:Name="RemainingText"
+                                           Text="1900 ккал"
+                                           FontSize="34"
+                                           FontWeight="SemiBold"
+                                           Margin="0,15,0,10"/>
+                                <TextBlock Text="До дневной нормы"
+                                           FontSize="12"
+                                           Foreground="#43552C"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="2"
+                                Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Съедено"
+                                           Foreground="#727B75"/>
+                                <TextBlock x:Name="EatenText"
+                                           Text="0 ккал"
+                                           FontSize="30"
+                                           FontWeight="SemiBold"
+                                           Margin="0,18,0,10"/>
+                                <TextBlock Text="За сегодняшний день"
+                                           Style="{StaticResource Muted}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="4"
+                                Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Дневная норма"
+                                           Foreground="#727B75"/>
+                                <TextBlock Text="1900 ккал"
+                                           FontSize="30"
+                                           FontWeight="SemiBold"
+                                           Margin="0,18,0,10"/>
+                                <TextBlock Text="Твой ориентир на день"
+                                           Style="{StaticResource Muted}"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Макронутриенты -->
+                    <Border Style="{StaticResource Card}"
+                            Margin="0,0,0,22">
+                        <StackPanel>
+                            <TextBlock Text="Баланс макронутриентов"
+                                       Style="{StaticResource Heading}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="24"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="24"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel>
+                                    <TextBlock x:Name="ProteinText"
+                                               Text="Белки: 0 / 100 г"/>
+                                    <ProgressBar x:Name="ProteinBar"
+                                                 Maximum="100"
+                                                 Foreground="#95BD45"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock x:Name="FatText"
+                                               Text="Жиры: 0 / 70 г"/>
+                                    <ProgressBar x:Name="FatBar"
+                                                 Maximum="70"
+                                                 Foreground="#DAAF77"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock x:Name="CarbsText"
+                                               Text="Углеводы: 0 / 200 г"/>
+                                    <ProgressBar x:Name="CarbsBar"
+                                                 Maximum="200"
+                                                 Foreground="#A59BD4"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="22"/>
+                            <ColumnDefinition Width="310"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Дневник -->
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,20">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
+
                                     <TextBlock Text="Приёмы пищи"
-                                               FontSize="18"
+                                               FontSize="19"
                                                FontWeight="SemiBold"/>
+
                                     <Border Grid.Column="1"
-                                            Background="#F1F5F2"
-                                            CornerRadius="6"
-                                            Padding="10,4">
+                                            Background="#F2F4F0"
+                                            CornerRadius="8"
+                                            Padding="10,5">
                                         <TextBlock Text="Сегодня"
-                                                   FontSize="12"
-                                                   Foreground="#62766A"/>
+                                                   FontSize="12"/>
                                     </Border>
                                 </Grid>
 
                                 <ListBox x:Name="DiaryList"
-                                         MinHeight="220"
+                                         MinHeight="300"
                                          BorderThickness="0"
                                          Background="Transparent"
                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
                                     <ListBox.Style>
                                         <Style TargetType="ListBox">
                                             <Style.Triggers>
@@ -293,17 +405,24 @@
                                                     <Setter Property="Template">
                                                         <Setter.Value>
                                                             <ControlTemplate TargetType="ListBox">
-                                                                <Border Background="#F7F9F7"
-                                                                        CornerRadius="10"
-                                                                        Padding="24,35">
-                                                                    <StackPanel VerticalAlignment="Center">
-                                                                        <TextBlock Text="Начните с первого приёма пищи"
+                                                                <Border Background="#F7F8F5"
+                                                                        CornerRadius="14"
+                                                                        Padding="24,55">
+                                                                    <StackPanel>
+                                                                        <TextBlock Text="&#xE8A5;"
+                                                                                   FontFamily="Segoe MDL2 Assets"
+                                                                                   FontSize="34"
+                                                                                   Foreground="#8A9B78"
+                                                                                   HorizontalAlignment="Center"
+                                                                                   Margin="0,0,0,20"/>
+                                                                        <TextBlock Text="Что сегодня на тарелке?"
+                                                                                   FontSize="18"
                                                                                    FontWeight="SemiBold"
                                                                                    TextAlignment="Center"/>
-                                                                        <TextBlock Text="Выберите продукт и укажите массу в форме ниже."
-                                                                                   Foreground="#78857D"
+                                                                        <TextBlock Text="Добавь первый продукт —&#10;мы посчитаем калории и БЖУ."
+                                                                                   Foreground="#727B75"
                                                                                    TextAlignment="Center"
-                                                                                   Margin="0,9,0,0"/>
+                                                                                   Margin="0,10,0,0"/>
                                                                     </StackPanel>
                                                                 </Border>
                                                             </ControlTemplate>
@@ -314,32 +433,44 @@
                                         </Style>
                                     </ListBox.Style>
 
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="HorizontalContentAlignment"
+                                                    Value="Stretch"/>
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="Margin" Value="0,0,0,8"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <Border Padding="12,14"
-                                                    BorderBrush="#E6ECE8"
+                                            <Border Padding="12,16"
+                                                    BorderBrush="#EDF0EC"
                                                     BorderThickness="0,0,0,1">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
+
                                                     <StackPanel Margin="0,0,12,0">
                                                         <TextBlock Text="{Binding Meal}"
-                                                                   Foreground="#32765B"
                                                                    FontSize="12"
-                                                                   Margin="0,0,0,5"/>
+                                                                   Foreground="#71874D"
+                                                                   Margin="0,0,0,6"/>
                                                         <TextBlock Text="{Binding Product}"
+                                                                   FontSize="15"
                                                                    FontWeight="SemiBold"/>
                                                         <TextBlock Text="{Binding Details}"
+                                                                   Foreground="#727B75"
                                                                    FontSize="12"
-                                                                   Foreground="#78857D"
-                                                                   Margin="0,5,0,0"/>
+                                                                   Margin="0,6,0,0"/>
                                                     </StackPanel>
+
                                                     <TextBlock Grid.Column="1"
                                                                Text="{Binding CaloriesText}"
-                                                               VerticalAlignment="Center"
-                                                               FontWeight="SemiBold"/>
+                                                               FontWeight="SemiBold"
+                                                               VerticalAlignment="Center"/>
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>
@@ -348,141 +479,50 @@
                             </StackPanel>
                         </Border>
 
-                        <Border Style="{StaticResource Panel}">
+                        <!-- Добавление -->
+                        <Border Grid.Column="2"
+                                Style="{StaticResource Card}"
+                                VerticalAlignment="Top">
                             <StackPanel>
                                 <TextBlock Text="Добавить продукт"
                                            Style="{StaticResource Heading}"/>
 
                                 <TextBlock Text="Продукт"
-                                           Style="{StaticResource Caption}"/>
+                                           Style="{StaticResource FieldLabel}"/>
                                 <ComboBox x:Name="ProductCombo"
                                           DisplayMemberPath="Name"
-                                          Margin="0,0,0,16"/>
+                                          Margin="0,0,0,18"/>
 
-                                <Grid Margin="0,0,0,20">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="16"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+                                <TextBlock Text="Приём пищи"
+                                           Style="{StaticResource FieldLabel}"/>
+                                <ComboBox x:Name="MealCombo"
+                                          SelectedIndex="0"
+                                          Margin="0,0,0,18">
+                                    <ComboBoxItem Content="Завтрак"/>
+                                    <ComboBoxItem Content="Обед"/>
+                                    <ComboBoxItem Content="Ужин"/>
+                                    <ComboBoxItem Content="Перекус"/>
+                                </ComboBox>
 
-                                    <StackPanel>
-                                        <TextBlock Text="Приём пищи"
-                                                   Style="{StaticResource Caption}"/>
-                                        <ComboBox x:Name="MealCombo"
-                                                  SelectedIndex="0">
-                                            <ComboBoxItem Content="Завтрак"/>
-                                            <ComboBoxItem Content="Обед"/>
-                                            <ComboBoxItem Content="Ужин"/>
-                                            <ComboBoxItem Content="Перекус"/>
-                                        </ComboBox>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Column="2">
-                                        <TextBlock Text="Масса, г"
-                                                   Style="{StaticResource Caption}"/>
-                                        <TextBox x:Name="MassTextBox"/>
-                                    </StackPanel>
-                                </Grid>
+                                <TextBlock Text="Масса, г"
+                                           Style="{StaticResource FieldLabel}"/>
+                                <TextBox x:Name="MassTextBox"
+                                         Margin="0,0,0,22"/>
 
                                 <Button Content="+  Добавить в дневник"
-                                        Style="{StaticResource ActionButton}"
-                                        HorizontalContentAlignment="Center"
+                                        Style="{StaticResource ButtonBase}"
                                         Click="AddProduct_Click"/>
 
                                 <TextBlock x:Name="MessageText"
-                                           Foreground="#32765B"
+                                           Foreground="#55752C"
                                            FontSize="12"
                                            Margin="0,12,0,0"
                                            AutomationProperties.LiveSetting="Polite"/>
                             </StackPanel>
                         </Border>
-                    </StackPanel>
-
-                    <!-- Итоги дня -->
-                    <StackPanel Grid.Column="2">
-                        <Border Style="{StaticResource Panel}"
-                                Margin="0,0,0,20">
-                            <StackPanel>
-                                <TextBlock Text="Баланс дня"
-                                           Style="{StaticResource Heading}"/>
-
-                                <TextBlock Text="Осталось до нормы"
-                                           Style="{StaticResource Caption}"/>
-
-                                <TextBlock x:Name="RemainingText"
-                                           Text="1900 ккал"
-                                           FontSize="30"
-                                           FontWeight="SemiBold"
-                                           Foreground="{StaticResource Accent}"
-                                           Margin="0,0,0,24"/>
-
-                                <Grid Margin="0,0,0,12">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Съедено"
-                                               Foreground="{StaticResource Muted}"/>
-                                    <TextBlock x:Name="EatenText"
-                                               Grid.Column="1"
-                                               Text="0 ккал"
-                                               FontWeight="SemiBold"/>
-                                </Grid>
-
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Дневная норма"
-                                               Foreground="{StaticResource Muted}"/>
-                                    <TextBlock Grid.Column="1"
-                                               Text="1900 ккал"
-                                               FontWeight="SemiBold"/>
-                                </Grid>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Style="{StaticResource Panel}">
-                            <StackPanel>
-                                <TextBlock Text="Макронутриенты"
-                                           Style="{StaticResource Heading}"/>
-
-                                <TextBlock x:Name="ProteinText"
-                                           Text="Белки: 0 / 100 г"/>
-                                <ProgressBar x:Name="ProteinBar"
-                                             Maximum="100"
-                                             Foreground="#5E9478"/>
-
-                                <TextBlock x:Name="FatText"
-                                           Text="Жиры: 0 / 70 г"/>
-                                <ProgressBar x:Name="FatBar"
-                                             Maximum="70"
-                                             Foreground="#C59A59"/>
-
-                                <TextBlock x:Name="CarbsText"
-                                           Text="Углеводы: 0 / 200 г"/>
-                                <ProgressBar x:Name="CarbsBar"
-                                             Maximum="200"
-                                             Foreground="#8299BC"
-                                             Margin="0,9,0,0"/>
-                            </StackPanel>
-                        </Border>
-
-                        <TextBlock Text="Калорийность и БЖУ порции рассчитываются автоматически по массе продукта."
-                                   FontSize="12"
-                                   Foreground="{StaticResource Muted}"
-                                   Margin="8,18,8,0"/>
-                    </StackPanel>
-                </Grid>
+                    </Grid>
+                </StackPanel>
             </ScrollViewer>
-
-            <TextBlock Grid.Row="2"
-                       Text="Дневник питания · Ваш ежедневный баланс"
-                       Foreground="{StaticResource Muted}"
-                       FontSize="12"
-                       Margin="0,18,0,0"/>
         </Grid>
     </Grid>
 </Window>
