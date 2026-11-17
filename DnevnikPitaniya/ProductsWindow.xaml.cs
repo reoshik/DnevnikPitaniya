@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
@@ -48,9 +42,7 @@ namespace DnevnikPitaniya
 
             string query = SearchBox.Text.Trim();
 
-            return product.Name.Contains(
-                query,
-                StringComparison.CurrentCultureIgnoreCase);
+            return product.Name.Contains(query, StringComparison.CurrentCultureIgnoreCase) || product.Brand.Contains(query, StringComparison.CurrentCultureIgnoreCase);
         }
 
         private void SearchBox_TextChanged(
@@ -84,6 +76,8 @@ namespace DnevnikPitaniya
             DeleteButton.IsEnabled = true;
 
             NameBox.Text = product.Name;
+            BrandBox.Text = product.Brand;
+            PhotoUrlBox.Text = product.PhotoUrl ?? "";
             CaloriesBox.Text = Format(product.Calories);
             ProteinBox.Text = Format(product.Protein);
             FatBox.Text = Format(product.Fat);
@@ -112,6 +106,7 @@ namespace DnevnikPitaniya
 
             bool duplicate = products.Any(product =>
                 !ReferenceEquals(product, editingProduct) &&
+                string.Equals(product.Brand.Trim(), BrandBox.Text.Trim(), StringComparison.CurrentCultureIgnoreCase) &&
                 string.Equals(
                     product.Name.Trim(),
                     name,
@@ -149,10 +144,17 @@ namespace DnevnikPitaniya
                 return;
             }
 
+            if (!string.IsNullOrWhiteSpace(PhotoUrlBox.Text) &&
+                (!Uri.TryCreate(PhotoUrlBox.Text.Trim(), UriKind.Absolute, out Uri? uri) ||
+                 uri.Scheme != Uri.UriSchemeHttps))
+            {
+                ShowError("Укажите корректную HTTPS-ссылку на фото.");
+                return;
+            }
             bool isNew = editingProduct == null;
 
             var updatedProduct = new ProductInfo(
-                name, calories, protein, fat, carbs);
+                name, calories, protein, fat, carbs) { Brand = BrandBox.Text.Trim(), PhotoUrl = string.IsNullOrWhiteSpace(PhotoUrlBox.Text) ? null : PhotoUrlBox.Text.Trim() };
 
             if (isNew)
             {
@@ -217,6 +219,8 @@ namespace DnevnikPitaniya
             DeleteButton.IsEnabled = false;
 
             NameBox.Clear();
+            BrandBox.Clear();
+            PhotoUrlBox.Clear();
             CaloriesBox.Clear();
             ProteinBox.Clear();
             FatBox.Clear();
@@ -271,3 +275,4 @@ namespace DnevnikPitaniya
         }
     }
 }
+

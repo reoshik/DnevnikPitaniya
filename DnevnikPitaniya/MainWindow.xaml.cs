@@ -1,4 +1,5 @@
-﻿
+using System.Windows.Data;
+
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -9,6 +10,7 @@ namespace DnevnikPitaniya
 {
     public partial class MainWindow : Window
     {
+        private ListCollectionView? productView;
         private const decimal DailyCalorieNorm = 1900m;
 
         // Общий каталог продуктов для главного окна и каталога
@@ -38,7 +40,8 @@ namespace DnevnikPitaniya
             products.Add(new ProductInfo("Картофель", 77m, 2m, 0.1m, 17m));
             products.Add(new ProductInfo("Греческий йогурт", 97m, 9m, 5m, 3.6m));
 
-            ProductCombo.ItemsSource = products;
+            productView = new ListCollectionView(products);
+            ProductCombo.ItemsSource = productView;
             ProductCombo.SelectedIndex = 0;
 
             UpdateSummary();
@@ -47,7 +50,7 @@ namespace DnevnikPitaniya
         // Добавление продукта в дневник
         private void AddProduct_Click(object sender, RoutedEventArgs e)
         {
-            ProductInfo product = ProductCombo.SelectedItem as ProductInfo;
+            ProductInfo? product = ProductCombo.SelectedItem as ProductInfo;
 
             if (product == null)
             {
@@ -61,7 +64,7 @@ namespace DnevnikPitaniya
 
             bool isValidMass = decimal.TryParse(
                 normalized,
-                NumberStyles.Number,
+                NumberStyles.AllowDecimalPoint,
                 CultureInfo.InvariantCulture,
                 out mass
             );
@@ -72,7 +75,7 @@ namespace DnevnikPitaniya
                 return;
             }
 
-            ComboBoxItem selectedMeal =
+            ComboBoxItem? selectedMeal =
                 MealCombo.SelectedItem as ComboBoxItem;
 
             if (selectedMeal == null)
@@ -81,7 +84,7 @@ namespace DnevnikPitaniya
                 return;
             }
 
-            string meal = selectedMeal.Content.ToString();
+            string meal = selectedMeal.Content?.ToString() ?? "Перекус";
 
             // Расчёт питательной ценности
             decimal factor = mass / 100m;
@@ -108,19 +111,10 @@ namespace DnevnikPitaniya
         // Пересчёт калорий и КБЖУ
         private void UpdateSummary()
         {
-            decimal calories = 0;
-            decimal protein = 0;
-            decimal fat = 0;
-            decimal carbs = 0;
-
-            foreach (DiaryEntry entry in diaryEntries)
-            {
-                calories += entry.Calories;
-                protein += entry.Protein;
-                fat += entry.Fat;
-                carbs += entry.Carbs;
-            }
-
+            decimal calories = diaryEntries.Sum(entry => entry.Calories);
+            decimal protein = diaryEntries.Sum(entry => entry.Protein);
+            decimal fat = diaryEntries.Sum(entry => entry.Fat);
+            decimal carbs = diaryEntries.Sum(entry => entry.Carbs);
             decimal remaining = DailyCalorieNorm - calories;
 
             EatenText.Text = calories.ToString("0") + " ккал";
@@ -140,6 +134,14 @@ namespace DnevnikPitaniya
             CarbsBar.Value = Math.Min((double)carbs, 200);
         }
 
+        private void ProductSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (productView == null) return;
+            string query = ProductSearchBox.Text.Trim();
+            productView.Filter = item => item is ProductInfo p &&
+                (p.Name.Contains(query, StringComparison.CurrentCultureIgnoreCase) ||
+                 p.Brand.Contains(query, StringComparison.CurrentCultureIgnoreCase));
+        }
         // Открытие каталога продуктов
         private void Products_Click(object sender, RoutedEventArgs e)
         {
@@ -184,59 +186,5 @@ namespace DnevnikPitaniya
                 "О программе");
         }
     }
-
-    // Информация о продукте на 100 граммов
-    public class ProductInfo
-    {
-        public string Name { get; set; }
-        public decimal Calories { get; set; }
-        public decimal Protein { get; set; }
-        public decimal Fat { get; set; }
-        public decimal Carbs { get; set; }
-
-        public ProductInfo(
-            string name,
-            decimal calories,
-            decimal protein,
-            decimal fat,
-            decimal carbs)
-        {
-            Name = name;
-            Calories = calories;
-            Protein = protein;
-            Fat = fat;
-            Carbs = carbs;
-        }
-    }
-
-    // Запись о съеденном продукте
-    public class DiaryEntry
-    {
-        public string Meal { get; set; }
-        public string Product { get; set; }
-        public decimal Mass { get; set; }
-        public decimal Calories { get; set; }
-        public decimal Protein { get; set; }
-        public decimal Fat { get; set; }
-        public decimal Carbs { get; set; }
-
-        public string Details
-        {
-            get
-            {
-                return Mass.ToString("0") + " г · Б: " +
-                       Protein.ToString("0.0") + " г · Ж: " +
-                       Fat.ToString("0.0") + " г · У: " +
-                       Carbs.ToString("0.0") + " г";
-            }
-        }
-
-        public string CaloriesText
-        {
-            get
-            {
-                return Calories.ToString("0") + " ккал";
-            }
-        }
-    }
 }
+
