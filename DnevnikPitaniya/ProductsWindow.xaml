@@ -1,12 +1,269 @@
 ﻿<Window x:Class="DnevnikPitaniya.ProductsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DnevnikPitaniya"
-        mc:Ignorable="d"
-        Title="ProductsWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Каталог продуктов"
+        Width="1120" Height="720"
+        MinWidth="1000" MinHeight="650"
+        WindowStartupLocation="CenterOwner"
+        Background="#F4F5F7"
+        Foreground="#202720"
+        FontFamily="Segoe UI"
+        FontSize="14">
+
+    <Window.Resources>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+
+        <Style x:Key="Label" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#727B75"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,7"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="MinHeight" Value="40"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Background" Value="#F7F8FA"/>
+            <Setter Property="BorderBrush" Value="#DEE4DF"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="Action" TargetType="Button">
+            <Setter Property="Background" Value="#D5F478"/>
+            <Setter Property="Foreground" Value="#202720"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Surface"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Surface"
+                                        Property="Opacity" Value="0.82"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Surface"
+                                        Property="Opacity" Value="0.65"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Surface"
+                                        Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#F4F6F2"/>
+            <Setter Property="Foreground" Value="#727B75"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style TargetType="DataGridCell">
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#202720"/>
+            <Setter Property="MinHeight" Value="48"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#EDF5DB"/>
+                    <Setter Property="Foreground" Value="#202720"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Margin="28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Margin="0,0,0,24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel>
+                <TextBlock Text="Каталог продуктов"
+                           FontSize="28"
+                           FontWeight="SemiBold"/>
+                <TextBlock Text="Пищевая ценность указана на 100 г продукта"
+                           Foreground="#727B75"
+                           Margin="0,7,0,0"/>
+            </StackPanel>
+
+            <Button Grid.Column="1"
+                    Content="+  Новый продукт"
+                    Style="{StaticResource Action}"
+                    VerticalAlignment="Center"
+                    Click="NewProduct_Click"/>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Таблица -->
+            <Border Background="White"
+                    CornerRadius="18"
+                    Padding="20">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Поиск по названию"
+                               Style="{StaticResource Label}"/>
+
+                    <TextBox x:Name="SearchBox"
+                             Grid.Row="1"
+                             Margin="0,0,0,18"
+                             TextChanged="SearchBox_TextChanged"/>
+
+                    <DataGrid x:Name="ProductsGrid"
+                              Grid.Row="2"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal"
+                              HorizontalGridLinesBrush="#EDF0EC"
+                              BorderThickness="0"
+                              Background="White"
+                              RowHeaderWidth="0"
+                              SelectionChanged="ProductsGrid_SelectionChanged">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Название"
+                                                Binding="{Binding Name}"
+                                                Width="*"
+                                                MinWidth="160"/>
+                            <DataGridTextColumn Header="Ккал"
+                                                Binding="{Binding Calories, StringFormat={}{0:0.#}}"
+                                                Width="75"/>
+                            <DataGridTextColumn Header="Б, г"
+                                                Binding="{Binding Protein, StringFormat={}{0:0.#}}"
+                                                Width="65"/>
+                            <DataGridTextColumn Header="Ж, г"
+                                                Binding="{Binding Fat, StringFormat={}{0:0.#}}"
+                                                Width="65"/>
+                            <DataGridTextColumn Header="У, г"
+                                                Binding="{Binding Carbs, StringFormat={}{0:0.#}}"
+                                                Width="65"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <TextBlock x:Name="CountText"
+                               Grid.Row="3"
+                               Foreground="#727B75"
+                               FontSize="12"
+                               Margin="0,15,0,0"/>
+                </Grid>
+            </Border>
+
+            <!-- Редактор -->
+            <Border Grid.Column="2"
+                    Background="White"
+                    CornerRadius="18"
+                    Padding="22">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock x:Name="EditorTitle"
+                                   Text="Новый продукт"
+                                   FontSize="19"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,22"/>
+
+                        <TextBlock Text="Название"
+                                   Style="{StaticResource Label}"/>
+                        <TextBox x:Name="NameBox"
+                                 Margin="0,0,0,16"/>
+
+                        <TextBlock Text="Калорийность, ккал / 100 г"
+                                   Style="{StaticResource Label}"/>
+                        <TextBox x:Name="CaloriesBox"
+                                 Margin="0,0,0,16"/>
+
+                        <TextBlock Text="Белки, г / 100 г"
+                                   Style="{StaticResource Label}"/>
+                        <TextBox x:Name="ProteinBox"
+                                 Margin="0,0,0,16"/>
+
+                        <TextBlock Text="Жиры, г / 100 г"
+                                   Style="{StaticResource Label}"/>
+                        <TextBox x:Name="FatBox"
+                                 Margin="0,0,0,16"/>
+
+                        <TextBlock Text="Углеводы, г / 100 г"
+                                   Style="{StaticResource Label}"/>
+                        <TextBox x:Name="CarbsBox"
+                                 Margin="0,0,0,22"/>
+
+                        <Button x:Name="SaveButton"
+                                Content="Добавить продукт"
+                                Style="{StaticResource Action}"
+                                Click="SaveProduct_Click"/>
+
+                        <Button x:Name="DeleteButton"
+                                Content="Удалить продукт"
+                                Style="{StaticResource Action}"
+                                Background="#FBECE9"
+                                Foreground="#A44F43"
+                                Margin="0,10,0,0"
+                                IsEnabled="False"
+                                Click="DeleteProduct_Click"/>
+
+                        <TextBlock x:Name="StatusText"
+                                   FontSize="12"
+                                   Margin="0,15,0,0"
+                                   Foreground="#55752C"
+                                   AutomationProperties.LiveSetting="Polite"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

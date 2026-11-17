@@ -143,11 +143,16 @@ namespace DnevnikPitaniya
         // Открытие каталога продуктов
         private void Products_Click(object sender, RoutedEventArgs e)
         {
-            ProductsWindow window = new ProductsWindow(products);
-            window.Owner = this;
-            window.ShowDialog();
-        }
+            var window = new ProductsWindow(products)
+            {
+                Owner = this
+            };
 
+            window.ShowDialog();
+
+            if (ProductCombo.SelectedItem == null && products.Count > 0)
+                ProductCombo.SelectedIndex = 0;
+        }
         // Остальные пункты меню
 
         private void Diary_Click(object sender, RoutedEventArgs e)
